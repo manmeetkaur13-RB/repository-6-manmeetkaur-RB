@@ -1,1 +1,426 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101827">
+    <title>ExamGuard | Online Examination & Proctoring Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-shell">
+
+        <!-- Header -->
+        <header class="topbar">
+            <a class="brand" href="#" aria-label="ExamGuard home">
+                <span class="brand-mark">E</span>
+                <span>
+                    <strong>ExamGuard</strong>
+                    <small>EXAMINATION SIMULATOR</small>
+                </span>
+            </a>
+
+            <div class="topbar-right">
+                <span class="environment-pill">
+                    <span class="status-dot"></span>
+                    DEMO ENVIRONMENT
+                </span>
+                <button class="icon-button" id="helpBtn"
+                        type="button" aria-label="Help">?</button>
+            </div>
+        </header>
+
+        <main>
+
+            <!-- Welcome Screen -->
+            <section id="welcomeScreen" class="welcome-layout">
+                <div class="welcome-copy">
+                    <div class="eyebrow">
+                        <span class="eyebrow-line"></span>
+                        SECURE ASSESSMENT WORKSPACE
+                    </div>
+
+                    <h1>Take your exam.<br>
+                        <span>Stay focused.</span>
+                    </h1>
+
+                    <p class="lead">
+                        A demonstration of online assessments with
+                        browser-activity monitoring, transparent warnings
+                        and instant results.
+                    </p>
+
+                    <div class="feature-row">
+                        <span><span class="check">✓</span> Timed assessment</span>
+                        <span><span class="check">✓</span> Autosaved answers</span>
+                        <span><span class="check">✓</span> Activity audit log</span>
+                    </div>
+                </div>
+
+                <div class="setup-card">
+                    <div class="card-heading">
+                        <div>
+                            <span class="mini-label">STUDENT PORTAL</span>
+                            <h2>Ready to begin?</h2>
+                        </div>
+                        <span class="card-icon">↗</span>
+                    </div>
+
+                    <p class="muted">
+                        Enter your details to start the sample assessment.
+                    </p>
+
+                    <form id="startForm">
+                        <label for="studentName">Full name</label>
+                        <input id="studentName" name="studentName"
+                               type="text" placeholder="e.g. Alex Morgan"
+                               maxlength="60" required>
+
+                        <label for="studentId">Student ID</label>
+                        <input id="studentId" name="studentId"
+                               type="text" placeholder="e.g. STU-1042"
+                               maxlength="30" required>
+
+                        <div class="exam-summary">
+                            <div>
+                                <span class="summary-icon">◷</span>
+                                <span>
+                                    <strong>15 minutes</strong>
+                                    <small>Time limit</small>
+                                </span>
+                            </div>
+
+                            <div>
+                                <span class="summary-icon">▤</span>
+                                <span>
+                                    <strong>10 questions</strong>
+                                    <small>Multiple choice</small>
+                                </span>
+                            </div>
+
+                            <div>
+                                <span class="summary-icon">◎</span>
+                                <span>
+                                    <strong>Activity logs</strong>
+                                    <small>Browser events</small>
+                                </span>
+                            </div>
+                        </div>
+
+                        <label class="consent-row">
+                            <input type="checkbox" id="consentCheck" required>
+                            <span>
+                                I understand that this demo logs tab visibility
+                                and fullscreen changes. It does not prove
+                                cheating or use a real AI model.
+                            </span>
+                        </label>
+
+                        <button class="primary-button full-width" type="submit">
+                            Start examination <span>→</span>
+                        </button>
+                    </form>
+
+                    <p class="fine-print">
+                        Demo only · Data is stored in this browser session.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Examination Screen -->
+            <section id="examScreen" class="exam-layout hidden">
+
+                <div class="exam-main">
+                    <div class="exam-header">
+                        <div>
+                            <div class="eyebrow">
+                                GENERAL KNOWLEDGE · SAMPLE TEST
+                            </div>
+                            <h2 id="examGreeting">Examination in progress</h2>
+                        </div>
+
+                        <div class="timer-box">
+                            <span class="timer-label">TIME REMAINING</span>
+                            <strong id="timer">15:00</strong>
+                        </div>
+                    </div>
+
+                    <div class="progress-line">
+                        <div id="progressFill"></div>
+                    </div>
+
+                    <div class="question-meta">
+                        <span id="questionCount">QUESTION 1 OF 10</span>
+                        <span id="answeredCount">0 answered</span>
+                    </div>
+
+                    <article class="question-card">
+                        <div class="question-top">
+                            <span class="question-number" id="questionNumber">01</span>
+                            <span class="marks-pill">1 POINT</span>
+                        </div>
+
+                        <h3 id="questionText">Question text appears here</h3>
+
+                        <div id="optionsList" class="options-list"></div>
+
+                        <div class="question-actions">
+                            <button id="prevBtn" class="secondary-button"
+                                    type="button">← Previous</button>
+
+                            <button id="reviewBtn" class="review-button"
+                                    type="button">☆ Mark for review</button>
+
+                            <button id="nextBtn" class="primary-button"
+                                    type="button">Next question →</button>
+                        </div>
+                    </article>
+
+                    <!-- Question Navigator -->
+                    <div class="question-nav-card">
+                        <div class="nav-card-heading">
+                            <div>
+                                <strong>Question navigator</strong>
+                                <small>Choose a question to jump to it</small>
+                            </div>
+                            <span id="navProgress">0 / 10 answered</span>
+                        </div>
+
+                        <div id="questionGrid" class="question-grid"></div>
+
+                        <div class="legend">
+                            <span><i class="legend-current"></i> Current</span>
+                            <span><i class="legend-answered"></i> Answered</span>
+                            <span><i class="legend-review"></i> Review</span>
+                            <span><i class="legend-empty"></i> Unanswered</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proctoring Sidebar -->
+                <aside class="monitor-sidebar">
+                    <div class="sidebar-heading">
+                        <div>
+                            <span class="live-indicator"></span>
+                            <strong>Proctoring monitor</strong>
+                        </div>
+                        <span class="demo-tag">SIMULATED</span>
+                    </div>
+
+                    <div class="monitor-status">
+                        <div class="monitor-symbol">⌁</div>
+                        <div>
+                            <strong id="monitorStatus">Monitoring active</strong>
+                            <small id="monitorSubtext">
+                                Browser activity checks enabled
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="monitor-metrics">
+                        <div>
+                            <span>Tab changes</span>
+                            <strong id="tabCount">0</strong>
+                        </div>
+                        <div>
+                            <span>Fullscreen exits</span>
+                            <strong id="fullscreenCount">0</strong>
+                        </div>
+                        <div>
+                            <span>Warnings</span>
+                            <strong id="warningCount">0</strong>
+                        </div>
+                    </div>
+
+                    <!-- Experimental AI Indicator -->
+                    <div class="ai-card">
+                        <div class="ai-card-title">
+                            <span class="ai-icon">✳</span>
+                            <div>
+                                <strong>AI activity assistant</strong>
+                                <small>Experimental simulation</small>
+                            </div>
+                        </div>
+
+                        <div class="risk-row">
+                            <span>Activity signal</span>
+                            <strong id="riskLabel">Low</strong>
+                        </div>
+
+                        <div class="risk-track">
+                            <div id="riskFill"></div>
+                        </div>
+
+                        <p id="riskDescription">
+                            No unusual browser events recorded.
+                        </p>
+
+                        <p class="ai-disclaimer">
+                            This is a rule-based demo indicator, not AI
+                            inference. Signals can be caused by normal
+                            browser behaviour.
+                        </p>
+                    </div>
+
+                    <!-- Activity Log -->
+                    <div class="event-log-card">
+                        <div class="log-heading">
+                            <strong>Activity log</strong>
+                            <span id="logCount">1 event</span>
+                        </div>
+
+                        <div id="eventLog" class="event-log"
+                             aria-live="polite"></div>
+                    </div>
+
+                    <button id="submitBtn" class="submit-button" type="button">
+                        Submit examination <span>→</span>
+                    </button>
+
+                    <button id="fullscreenBtn" class="text-button"
+                            type="button">
+                        ⛶ Enter fullscreen (optional)
+                    </button>
+                </aside>
+            </section>
+
+            <!-- Results Screen -->
+            <section id="resultScreen" class="results-layout hidden">
+                <div class="results-hero">
+                    <div class="result-icon">✓</div>
+
+                    <div class="eyebrow">ASSESSMENT COMPLETE</div>
+
+                    <h1 id="resultTitle">Your results are ready.</h1>
+
+                    <p id="resultSubtitle">
+                        Your sample assessment has been submitted.
+                    </p>
+                </div>
+
+                <div class="score-grid">
+                    <div class="score-card score-primary">
+                        <span>YOUR SCORE</span>
+                        <strong id="scoreValue">0/10</strong>
+                        <small id="percentageValue">0% correct</small>
+                    </div>
+
+                    <div class="score-card">
+                        <span>TIME USED</span>
+                        <strong id="timeUsed">00:00</strong>
+                        <small>Time spent in exam</small>
+                    </div>
+
+                    <div class="score-card">
+                        <span>ACTIVITY EVENTS</span>
+                        <strong id="activityTotal">0</strong>
+                        <small>Logged browser events</small>
+                    </div>
+
+                    <div class="score-card">
+                        <span>REVIEW FLAGS</span>
+                        <strong id="reviewTotal">0</strong>
+                        <small>Questions marked for review</small>
+                    </div>
+                </div>
+
+                <div class="results-content">
+                    <div class="review-panel">
+                        <div class="panel-title">
+                            <div>
+                                <h2>Answer review</h2>
+                                <p>Correct answers and your selections</p>
+                            </div>
+                            <span class="panel-badge">10 QUESTIONS</span>
+                        </div>
+
+                        <div id="answerReview" class="answer-review"></div>
+                    </div>
+
+                    <div class="results-side">
+                        <div class="review-panel activity-results">
+                            <div class="panel-title">
+                                <div>
+                                    <h2>Proctoring summary</h2>
+                                    <p>
+                                        Events are indicators, not proof
+                                        of misconduct
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div id="finalActivityLog"
+                                 class="final-activity-log"></div>
+
+                            <div class="summary-note">
+                                This simulator does not make automated
+                                academic-integrity decisions. Review
+                                events in context.
+                            </div>
+                        </div>
+
+                        <button id="restartBtn"
+                                class="primary-button full-width"
+                                type="button">
+                            Start a new demo exam ↻
+                        </button>
+
+                        <button id="exportBtn"
+                                class="secondary-button full-width"
+                                type="button">
+                            Export results as JSON ↓
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <span>© 2026 ExamGuard Simulator</span>
+            <span>Privacy-first demo · No video is recorded or uploaded</span>
+        </footer>
+    </div>
+
+    <!-- Notifications -->
+    <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+    <!-- Help Dialog -->
+    <dialog id="helpDialog" class="help-dialog">
+        <div class="dialog-head">
+            <h2>How this demo works</h2>
+            <button id="closeHelpBtn" class="icon-button"
+                    type="button" aria-label="Close help">×</button>
+        </div>
+
+        <ul>
+            <li>
+                Choose an answer and use the question navigator to move
+                around the test.
+            </li>
+            <li>Answers are saved in memory while the exam is open.</li>
+            <li>
+                Changing tabs or minimizing the window records a visibility
+                event. Leaving fullscreen records an exit only if fullscreen
+                was entered.
+            </li>
+            <li>
+                The experimental activity indicator is a simple illustrative
+                score, not a trained AI model.
+            </li>
+            <li>
+                Submit your exam early or wait for the timer to expire.
+            </li>
+        </ul>
+
+        <button id="helpOkBtn" class="primary-button full-width"
+                type="button">Got it</button>
+    </dialog>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
+
